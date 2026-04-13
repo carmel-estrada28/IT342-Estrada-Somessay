@@ -34,6 +34,10 @@ export default function Login() {
     }
   }
 
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  };
+
   return (
     <div className="login-page">
       {/* Navbar */}
@@ -84,7 +88,16 @@ export default function Login() {
             <hr className="divider" />
 
             <div className="social-buttons">
-              <button type="button" className="social-btn">google</button>
+              <button onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 px-4 hover:bg-gray-50 transition"
+              >
+                <img
+                  src="https://developers.google.com/identity/images/g-logo.png"
+                  alt="Google"
+                  className="w-5 h-5"
+                />
+                <span className="text-gray-700 font-medium">Sign in with Google</span>
+              </button>
               <button type="button" className="social-btn">microsoft</button>
               <button type="button" className="social-btn">facebook</button>
             </div>
