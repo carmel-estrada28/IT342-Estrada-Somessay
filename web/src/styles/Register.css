@@ -19,12 +19,9 @@
 /* ── Page ── */
 .register-page {
   min-height: 100vh;
-  background-color: var(--white);
+  background-color: #ffffff;
   background-image: url('/leaves-bg.png');
-  background-repeat: repeat;
-  background-size: 320px;
-  display: flex;
-  flex-direction: column;
+  background-size: 100%;
 }
 
 /* ── Navbar ── */
