@@ -1,0 +1,123 @@
+.activity-page {
+  min-height: 100vh;
+  background-color: #ffffff;
+  background-image: url('/leaves-bg.png');
+  background-repeat: repeat;
+  background-size: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-layout {
+  display: flex;
+  max-width: 860px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  gap: 2rem;
+  width: 100%;
+}
+
+.activity-main { flex: 1; }
+
+.activity-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.3rem;
+  color: #2c2c2c;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #EED59F;
+  padding-bottom: 0.5rem;
+}
+
+/* Date group label */
+.activity-date-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 1.25rem 0 0.5rem;
+}
+
+/* Activity item */
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid #f0ead8;
+}
+
+.activity-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #EED59F;
+  flex-shrink: 0;
+}
+
+.activity-avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #909F64;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.activity-text {
+  flex: 1;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #2c2c2c;
+}
+
+.activity-username {
+  font-weight: 600;
+  color: #5C3D1E;
+}
+
+.activity-action { color: #6b7280; }
+
+.activity-article {
+  font-weight: 500;
+  color: #D37B27;
+  cursor: pointer;
+}
+
+.activity-article:hover { text-decoration: underline; }
+
+.activity-time {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+.activity-empty {
+  font-family: 'Inter', sans-serif;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+  text-align: center;
+  padding: 2rem;
+  background: #f9f7f3;
+  border-radius: 12px;
+}
+
+.activity-loading {
+  font-family: 'Inter', sans-serif;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+}

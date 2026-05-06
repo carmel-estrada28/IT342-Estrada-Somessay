@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap');
+
+/* Page */
+.feed-page {
+  min-height: 100vh;
+  background-color: #ffffff;
+  background-image: url('/leaves-bg.png');
+  background-repeat: repeat;
+  background-size: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Layout */
+.feed-layout {
+  display: flex;
+  max-width: 860px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  gap: 2rem;
+  width: 100%;
+}
+
+.feed-main { flex: 1; }
+
+/* Welcome row */
+.feed-welcome-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.feed-welcome {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.3rem;
+  color: #2c2c2c;
+  margin: 0;
+}
+
+.feed-post-btn {
+  background-color: #D37B27;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.4rem 1.2rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.feed-post-btn:hover { background-color: #c06a1a; }
+
+/* Section label */
+.feed-section-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #6b7280;
+  border-bottom: 1px solid #EED59F;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Article card */
+.article-card {
+  display: flex;
+  gap: 1rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #f0ead8;
+}
+
+.article-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+}
+
+.article-card-cover {
+  width: 100px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.article-card-body { flex: 1; }
+
+.article-card-category {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: #909F64;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 4px;
+}
+
+.article-card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem;
+  color: #2c2c2c;
+  margin: 0 0 4px;
+}
+
+.article-card-author {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0 0 8px;
+}
+
+.article-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.article-card-likes {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #9B4B42;
+}
+
+.article-card-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+/* Sidebar */
+.feed-sidebar { width: 180px; flex-shrink: 0; }
+
+.sidebar-profile-card {
+  background-color: #909F64;
+  border-radius: 12px;
+  padding: 1rem;
+  color: #ffffff;
+}
+
+.sidebar-username {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1rem;
+  margin: 0 0 8px;
+}
+
+.sidebar-link-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: block;
+  padding: 3px 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  text-align: left;
+  width: 100%;
+}
+
+.sidebar-link-btn:hover { text-decoration: underline; }
+
+/* States */
+.feed-loading, .feed-empty {
+  font-family: 'Inter', sans-serif;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+}
+
+.feed-error {
+  font-family: 'Inter', sans-serif;
+  color: #9B4B42;
+  font-size: 0.95rem;
+  margin-top: 1rem;
+}
