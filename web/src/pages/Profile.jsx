@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { getMyArticles } from '../api/articleApi'
 import Navbar from '../components/Navbar'
 import '../styles/Register.css'
-import '../styles/Article.css'
 import '../styles/Feed.css'
+import '../styles/Profile.css'
 
 function getUserInfo() {
   try {
@@ -15,6 +15,7 @@ function getUserInfo() {
       userId: payload.userId,
       username: payload.username || payload.sub?.split('@')[0] || '',
       email: payload.sub || '',
+      profilePicUrl: payload.profilePicUrl || null,
     }
   } catch { return {} }
 }
@@ -24,6 +25,12 @@ export default function Profile() {
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const userInfo = getUserInfo()
+
+  // Also check localStorage for updated profile pic
+  const storedPic = localStorage.getItem('profilePicUrl')
+  const storedBio = localStorage.getItem('bio')
+  const profilePic = storedPic || userInfo.profilePicUrl
+  const bio = storedBio || 'writer on somessay.'
 
   useEffect(() => {
     if (userInfo.userId) {
@@ -45,9 +52,8 @@ export default function Profile() {
         <div className="profile-main">
           <h2 className="profile-section-title">my past seasons</h2>
 
-          {loading && (
-            <p className="feed-loading">loading your articles...</p>
-          )}
+          {loading && <p className="feed-loading">loading your articles...</p>}
+
           {!loading && articles.length === 0 && (
             <p className="feed-empty">
               You haven't written anything yet.{' '}
@@ -103,21 +109,58 @@ export default function Profile() {
 
         {/* Right: Sidebar */}
         <div className="profile-sidebar">
+
+          {/* Profile card */}
           <div className="profile-card">
+
+            {/* Profile picture */}
+            {profilePic ? (
+              <div className="profile-avatar-wrapper">
+                <img
+                  src={profilePic}
+                  alt="profile"
+                  className="profile-avatar"
+                />
+              </div>
+            ) : (
+              <div className="profile-avatar-placeholder">
+                {userInfo.username?.[0]?.toUpperCase() || '?'}
+              </div>
+            )}
+
             <p className="profile-card-name">{userInfo.username}</p>
             <p className="profile-card-handle">@{userInfo.username}</p>
-            <p className="profile-card-bio">writer on somessay.</p>
-            <button className="profile-edit-btn">edit profile</button>
+            <p className="profile-card-bio">{bio}</p>
+            <button
+              className="profile-edit-btn"
+              onClick={() => navigate('/edit-profile')}
+            >
+              edit profile
+            </button>
           </div>
 
-          <div style={{ backgroundColor: '#909F64', borderRadius: '12px', padding: '1rem' }}>
+          {/* Nav card */}
+          <div className="profile-nav-card">
             <button className="profile-nav-btn" onClick={() => navigate('/profile')}>
               my profile
             </button>
             <button className="profile-nav-btn" onClick={() => navigate('/activity')}>
               activity
             </button>
+            <hr className="profile-nav-divider" />
+            <button
+              className="profile-logout-btn"
+              onClick={() => {
+                localStorage.removeItem('token')
+                localStorage.removeItem('profilePicUrl')
+                localStorage.removeItem('bio')
+                navigate('/login')
+              }}
+            >
+              logout
+            </button>
           </div>
+
         </div>
       </div>
     </div>

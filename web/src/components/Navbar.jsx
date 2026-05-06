@@ -17,14 +17,19 @@ export default function Navbar() {
       <div className="navbar-links">
         <button className="nav-btn" onClick={() => navigate('/feed')}>home.</button>
         <button className="nav-btn" onClick={() => navigate('/create')}>write.</button>
-        <button className="nav-btn" onClick={() => navigate('/profile')}>my profile.</button>
-        <button
-          onClick={handleLogout}
-          className="nav-btn"
-          style={{ backgroundColor: 'transparent', color: '#9B4B42', border: '1px solid #9B4B42' }}
-        >
-          logout
-        </button>
+        <button className="nav-btn" onClick={() => navigate('/profile')}>profile.</button>
+            {(() => {
+                try {
+                    const token = localStorage.getItem('token')
+                    if (!token) return null
+                    const payload = JSON.parse(atob(token.split('.')[1]))
+                    return payload.role === 'ADMIN' ? (
+                    <button className="nav-btn" onClick={() => navigate('/admin')}>
+                        admin.
+                    </button>
+                    ) : null
+                } catch { return null }
+            })()}
       </div>
     </nav>
   )
