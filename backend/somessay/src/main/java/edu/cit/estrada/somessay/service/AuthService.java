@@ -57,7 +57,13 @@ public class AuthService {
             return new AuthResponse("error", "Invalid email or password.", null);
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        // ✅ Now passing userId, username, role into the token
+        String token = jwtUtil.generateToken(
+                user.getEmail(),
+                user.getId(),
+                user.getUsername(),
+                user.getRole().getName()
+        );
 
         return new AuthResponse("success", "Login successful.", Map.of(
                 "token", token,

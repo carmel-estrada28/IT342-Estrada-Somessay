@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import edu.cit.estrada.somessay.entity.Role;
+import edu.cit.estrada.somessay.repository.RoleRepository;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -24,6 +26,9 @@ public class OAuth2AuthenticationSuccessHandler
 
     @Autowired
     private JwtUtil jwtUtil;  // your class is JwtUtil, not JwtService
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Value("${app.frontend-url}")
     private String frontendUrl;
@@ -40,6 +45,9 @@ public class OAuth2AuthenticationSuccessHandler
         String picture = oAuth2User.getAttribute("picture");
 
         User user = userRepository.findByEmail(email).orElseGet(() -> {
+            Role userRole = roleRepository.findByName("USER")
+                    .orElseThrow(() -> new RuntimeException("Role not found"));
+
             User newUser = new User();
             newUser.setEmail(email);
             newUser.setUsername(generateUsername(name));
@@ -50,7 +58,12 @@ public class OAuth2AuthenticationSuccessHandler
             return userRepository.save(newUser);
         });
 
-        String token = jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(
+                user.getEmail(),
+                user.getId(),
+                user.getUsername(),
+                user.getRole() != null ? user.getRole().getName() : "USER"
+        );
 
         String redirectUrl = frontendUrl + "/oauth2/redirect?token=" + token;
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
