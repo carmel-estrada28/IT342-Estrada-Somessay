@@ -9,6 +9,8 @@ import ArticleDetail from './pages/ArticleDetail'
 import Profile from './pages/Profile'
 import Landing from './pages/Landing'
 import Activity from './pages/Activity' 
+import Admin from './pages/Admin'
+import EditProfile from './pages/EditProfile'
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token')
@@ -29,6 +31,8 @@ function App() {
         <Route path="/article/:id" element={<ProtectedRoute><ArticleDetail /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/activity" element={<ProtectedRoute><Activity /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+        <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   )
