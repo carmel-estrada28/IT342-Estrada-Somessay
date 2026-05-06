@@ -98,8 +98,6 @@ export default function Login() {
                 />
                 <span className="text-gray-700 font-medium">Sign in with Google</span>
               </button>
-              <button type="button" className="social-btn">microsoft</button>
-              <button type="button" className="social-btn">facebook</button>
             </div>
 
             <button type="submit" className="submit-btn">
