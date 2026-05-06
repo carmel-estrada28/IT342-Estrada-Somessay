@@ -25,7 +25,7 @@ export default function Login() {
       )
       if (res.data.status === "success") {
         localStorage.setItem("token", res.data.data.token)
-        navigate("/home")
+        navigate("/feed")
       } else {
         setError(res.data.message)
       }

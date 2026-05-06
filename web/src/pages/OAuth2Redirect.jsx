@@ -9,7 +9,7 @@ export default function OAuth2Redirect() {
     const token = searchParams.get("token")
     if (token) {
       localStorage.setItem("token", token)
-      navigate("/home")
+      navigate("/feed")
     } else {
       navigate("/login?error=oauth_failed")
     }
