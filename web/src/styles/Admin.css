@@ -1,0 +1,191 @@
+.admin-page {
+  min-height: 100vh;
+  background-color: #ffffff;
+  background-image: url('/leaves-bg.png');
+  background-size: 100%;
+}
+
+.admin-layout {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  width: 100%;
+}
+
+.admin-welcome {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.4rem;
+  color: #2c2c2c;
+  margin-bottom: 1.5rem;
+}
+
+/* Stats row */
+.admin-stats-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-stat-card {
+  flex: 1;
+  background-color: #EED59F;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+.admin-stat-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0 0 0.5rem;
+}
+
+.admin-stat-value {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.5rem;
+  color: #2c2c2c;
+  margin: 0;
+  line-height: 1;
+}
+
+.admin-stat-value.positive::before {
+  content: '+ ';
+  color: #59643A;
+}
+
+/* Tabs */
+.admin-tabs {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-tab {
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  background: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #2c2c2c;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-tab:hover {
+  background-color: #f9f7f3;
+}
+
+.admin-tab.active {
+  background-color: #EED59F;
+  border-color: #D37B27;
+  font-weight: 600;
+}
+
+/* Table */
+.admin-table-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden;
+  border: 1px solid #f0ead8;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  background-color: #EED59F;
+  padding: 0.875rem 1rem;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #5C3D1E;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-table td {
+  padding: 0.875rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #2c2c2c;
+  border-bottom: 1px solid #f9f7f3;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tr:hover td {
+  background-color: #fdfaf5;
+}
+
+/* Role badge */
+.admin-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-badge.user {
+  background-color: #e8f0d8;
+  color: #59643A;
+}
+
+.admin-badge.admin {
+  background-color: #fde8d8;
+  color: #D37B27;
+}
+
+.admin-badge.published {
+  background-color: #e8f0d8;
+  color: #59643A;
+}
+
+.admin-badge.draft {
+  background-color: #f0f0f0;
+  color: #6b7280;
+}
+
+/* Delete button */
+.admin-delete-btn {
+  background-color: #9B4B42;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.85rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.admin-delete-btn:hover { background-color: #7a3a33; }
+
+/* Empty/loading states */
+.admin-empty {
+  text-align: center;
+  padding: 2.5rem;
+  color: #6b7280;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+}
+
+.admin-error {
+  color: #9B4B42;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #fff5f5;
+  border-radius: 8px;
+  border: 1px solid #f5c6c3;
+}
