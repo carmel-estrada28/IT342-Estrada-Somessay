@@ -15,11 +15,39 @@ export default function CreateArticle() {
     category: 'ESSAY',
     status: 'PUBLISHED',
   })
+  const [coverImage, setCoverImage] = useState(null)
+  const [coverPreview, setCoverPreview] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value })
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError('Please upload an image file.')
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image must be smaller than 5MB.')
+      return
+    }
+
+    setCoverImage(file)
+    setCoverPreview(URL.createObjectURL(file))
+    setError('')
+  }
+
+  const handleRemoveImage = () => {
+    setCoverImage(null)
+    setCoverPreview(null)
+  }
 
   const handleSubmit = async (status) => {
     if (!form.title.trim()) {
@@ -37,8 +65,26 @@ export default function CreateArticle() {
 
     setLoading(true)
     setError('')
+
     try {
-      await createArticle({ ...form, status })
+      let coverUrl = null
+
+      // Upload image to Cloudinary if one was selected
+      if (coverImage) {
+        const cloudinaryData = new FormData()
+        cloudinaryData.append('file', coverImage)
+        cloudinaryData.append('upload_preset', 'somessay_uploads') // ← your Cloudinary preset
+        cloudinaryData.append('cloud_name', 'dolue6cdw')     // ← your Cloudinary cloud name
+
+        const cloudRes = await fetch(
+          'https://api.cloudinary.com/v1_1/dolue6cdw/image/upload', // ← replace your_cloud_name
+          { method: 'POST', body: cloudinaryData }
+        )
+        const cloudData = await cloudRes.json()
+        coverUrl = cloudData.secure_url
+      }
+
+      await createArticle({ ...form, status, coverUrl })
       navigate('/feed')
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to post. Please try again.')
@@ -74,7 +120,42 @@ export default function CreateArticle() {
             ))}
           </select>
 
-          <label className="create-content-label">write your article</label>
+          {/* Cover image upload */}
+          <label className="create-content-label" style={{ marginTop: '0.5rem' }}>
+            cover image <span style={{ color: '#aaa', fontWeight: 400 }}>(optional)</span>
+          </label>
+
+          {!coverPreview ? (
+            <label className="create-upload-box">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: 'none' }}
+              />
+              <span className="create-upload-icon">+</span>
+              <span className="create-upload-text">click here or drag a photo here</span>
+            </label>
+          ) : (
+            <div className="create-preview-wrapper">
+              <img
+                src={coverPreview}
+                alt="cover preview"
+                className="create-preview-img"
+              />
+              <button
+                className="create-remove-img-btn"
+                onClick={handleRemoveImage}
+                type="button"
+              >
+                remove
+              </button>
+            </div>
+          )}
+
+          <label className="create-content-label" style={{ marginTop: '1rem' }}>
+            write your article
+          </label>
           <textarea
             name="content"
             placeholder="Spill your thoughts..."
