@@ -1,4 +1,4 @@
-Somessay
+IT342-Estrada-Somessay
 ---
 Somessay is an application for writers and beginners alike to post their written works: articles, essays, diary entries, and other long form written content. The system includes a Spring Boot backend API, React web application, and Android mobile app, all integrated into a multi-platform content publishing and writing platform to provide a seamless place to experience all writers' written roots. 
 
