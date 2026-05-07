@@ -1,0 +1,69 @@
+/* Article card — shared across Feed, Profile, ArticleDetail */
+.article-card {
+  display: flex;
+  gap: 1rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #f0ead8;
+}
+
+.article-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+}
+
+.article-card-cover {
+  width: 100px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.article-card-body { flex: 1; }
+
+.article-card-category {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  color: #909F64;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 4px;
+}
+
+.article-card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem;
+  color: #2c2c2c;
+  margin: 0 0 4px;
+}
+
+.article-card-author {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0 0 8px;
+}
+
+.article-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.article-card-likes {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #9B4B42;
+}
+
+.article-card-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #aaa;
+}

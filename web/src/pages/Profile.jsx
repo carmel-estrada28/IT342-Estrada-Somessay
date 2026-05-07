@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar'
 import '../styles/Register.css'
 import '../styles/Feed.css'
 import '../styles/Profile.css'
+import '../styles/ArticleCard.css'
 
 function getUserInfo() {
   try {
