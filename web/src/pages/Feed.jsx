@@ -4,14 +4,21 @@ import { getAllArticles } from '../api/articleApi'
 import Navbar from '../components/Navbar'
 import '../styles/Register.css'
 import '../styles/Feed.css'
+import '../styles/ArticleCard.css'
 
-function getUsername() {
+function getUserInfo() {
   try {
     const token = localStorage.getItem('token')
-    if (!token) return ''
+    if (!token) return { username: '', profilePicUrl: null }
     const payload = JSON.parse(atob(token.split('.')[1]))
-    return payload.username || payload.sub?.split('@')[0] || ''
-  } catch { return '' }
+    return {
+      username: localStorage.getItem('displayUsername')
+        || payload.username
+        || payload.sub?.split('@')[0]
+        || '',
+      profilePicUrl: localStorage.getItem('profilePicUrl') || null,
+    }
+  } catch { return { username: '', profilePicUrl: null } }
 }
 
 export default function Feed() {
@@ -19,7 +26,7 @@ export default function Feed() {
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const username = getUsername()
+  const { username, profilePicUrl } = getUserInfo()
 
   useEffect(() => {
     getAllArticles()
@@ -36,7 +43,7 @@ export default function Feed() {
         {/* Left: Main feed */}
         <div className="feed-main">
           <div className="feed-welcome-row">
-            <p className="feed-welcome">welcome, {username} ·˚</p>
+            <p className="feed-welcome">welcome, {username}</p>
             <button
               className="feed-post-btn"
               onClick={() => navigate('/create')}
@@ -45,7 +52,7 @@ export default function Feed() {
             </button>
           </div>
 
-          <p className="feed-section-label">morning fall</p>
+          <p className="feed-section-label"></p>
 
           {loading && <p className="feed-loading">loading articles...</p>}
           {error && <p className="feed-error">{error}</p>}
@@ -86,7 +93,44 @@ export default function Feed() {
         {/* Right: Sidebar */}
         <div className="feed-sidebar">
           <div className="sidebar-profile-card">
+
+            {/* Profile picture */}
+            {profilePicUrl ? (
+              <img
+                src={profilePicUrl}
+                alt="profile"
+                style={{
+                  width: '65px',
+                  height: '65px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '2px solid #EED59F',
+                  display: 'block',
+                  margin: '0 auto 0.75rem',
+                }}
+              />
+            ) : (
+              <div style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                backgroundColor: '#EED59F',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 0.75rem',
+                fontSize: '1.25rem',
+                fontFamily: "'Instrument Serif', serif",
+                color: '#5C3D1E',
+              }}>
+                {username?.[0]?.toUpperCase() || '?'}
+              </div>
+            )}
+
             <p className="sidebar-username">{username}</p>
+
+            <hr className="profile-nav-divider" />
+            
             <button className="sidebar-link-btn" onClick={() => navigate('/profile')}>
               my profile
             </button>
