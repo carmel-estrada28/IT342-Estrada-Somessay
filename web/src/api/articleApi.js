@@ -12,4 +12,6 @@ export const addComment = (id, content) =>
   axiosClient.post(`/article/${id}/comments`, { content })
 export const deleteComment = (commentId) =>
   axiosClient.delete(`/comments/${commentId}`)
+export const getRandomQuote = () => axiosClient.get('/quotes/random')
 export const getMyActivity = (userId) => axiosClient.get(`/users/${userId}/activity`)
+export const searchArticles = (keyword) => axiosClient.get(`/article/search?keyword=${keyword}`)
