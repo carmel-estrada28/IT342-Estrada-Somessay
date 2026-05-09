@@ -28,6 +28,8 @@
   box-sizing: border-box;
   outline: none;
   transition: box-shadow 0.2s;
+background: #fff;
+
 }
 
 .create-title-input:focus { box-shadow: 0 0 0 2px #D37B27; }
@@ -41,6 +43,7 @@
   margin-bottom: 0.75rem;
   outline: none;
   cursor: pointer;
+background: #fff;
 }
 
 .create-content-label {
@@ -64,6 +67,8 @@
   box-sizing: border-box;
   outline: none;
   transition: box-shadow 0.2s;
+  background: #fff;
+
 }
 
 .create-textarea:focus { box-shadow: 0 0 0 2px #D37B27; }
@@ -110,7 +115,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: 0.2s;
 }
 
 .create-publish-btn:hover { background-color: #909F64; }
@@ -126,7 +131,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: 0.2s;
 }
 
 .create-draft-btn:hover { background-color: #c4c4c4; }
@@ -136,11 +141,6 @@
 .read-page {
   min-height: 100vh;
   background-color: #ffffff;
-  background-image: url('/leaves-bg.png');
-  background-repeat: repeat;
-  background-size: 320px;
-  display: flex;
-  flex-direction: column;
 }
 
 .read-layout {
@@ -216,7 +216,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: 0.2s;
 }
 
 .read-delete-btn:hover { background-color: #7a3a33; }
@@ -309,7 +309,7 @@
   padding: 0.5rem 0.75rem;
   cursor: pointer;
   font-size: 1rem;
-  transition: background 0.2s;
+  transition: 0.2s;
 }
 
 .comment-send-btn:hover { background-color: #909F64; }
@@ -327,7 +327,7 @@
   border-radius: 8px;
   cursor: pointer;
   background-color: #fafafa;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s, 0.2s;
   box-sizing: border-box;
   margin-bottom: 0.75rem;
 }
@@ -377,9 +377,59 @@
   font-family: 'Inter', sans-serif;
   font-size: 0.8rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: 0.2s;
 }
 
 .create-remove-img-btn:hover {
   background-color: rgba(155,75,66,0.85);
+}
+
+/* Settings toggles */
+.create-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.create-toggle-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #2c2c2c;
+}
+
+.create-toggle {
+  width: 36px;
+  height: 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  position: relative;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.create-toggle.on {
+  background-color: #59643A;
+}
+
+.create-toggle.off {
+  background-color: #D9D9D9;
+}
+
+.create-toggle-knob {
+  position: absolute;
+  top: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: left 0.2s;
+}
+
+.create-toggle.on .create-toggle-knob {
+  left: 19px;
+}
+
+.create-toggle.off .create-toggle-knob {
+  left: 3px;
 }

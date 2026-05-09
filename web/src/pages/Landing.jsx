@@ -33,13 +33,7 @@ export default function Landing() {
         </a>
         <div className="navbar-links">
           <button className="nav-btn" onClick={() => navigate('/login')}>home.</button>
-          <button
-            className="nav-btn"
-            style={{ backgroundColor: 'transparent', color: '#9B4B42', border: '1px solid #9B4B42' }}
-            onClick={() => navigate('/login')}
-          >
-            my profile.
-          </button>
+          <button className="nav-btn" onClick={() => navigate('/login')}>profile.</button>
         </div>
       </nav>
 
@@ -55,7 +49,7 @@ export default function Landing() {
             welcome to somessay.
           </p>
 
-          <p className="feed-section-label">morning fall</p>
+          <p className="feed-section-label"></p>
 
           {loading && <p className="feed-loading">loading articles...</p>}
 
@@ -67,8 +61,7 @@ export default function Landing() {
             <div
               key={article.articleId}
               className="article-card"
-              onClick={() => navigate('/login')}
-            >
+                onClick={() => navigate(`/article/${article.articleId}`)}>
               {article.coverUrl && (
                 <img
                   src={article.coverUrl}
@@ -102,11 +95,11 @@ export default function Landing() {
             boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '0.75rem'
+            gap: '0.5rem'
           }}>
             <p style={{
               fontFamily: "'Instrument Serif', serif",
-              fontSize: '1rem',
+              fontSize: '1.2rem',
               color: '#2c2c2c',
               margin: '0 0 0.25rem'
             }}>
@@ -122,7 +115,7 @@ export default function Landing() {
 
             <p style={{
               fontFamily: "'Instrument Serif', serif",
-              fontSize: '1rem',
+              fontSize: '1.2rem',
               color: '#2c2c2c',
               margin: '0.25rem 0'
             }}>

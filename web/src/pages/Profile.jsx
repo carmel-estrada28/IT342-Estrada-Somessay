@@ -14,20 +14,22 @@ function getUserInfo() {
     const payload = JSON.parse(atob(token.split('.')[1]))
     return {
       userId: payload.userId,
-      username: payload.username || payload.sub?.split('@')[0] || '',
+      username: localStorage.getItem('displayUsername') || payload.username || payload.sub?.split('@')[0] || '',
       email: payload.sub || '',
       profilePicUrl: payload.profilePicUrl || null,
     }
   } catch { return {} }
 }
 
+const FILTERS = ['ALL', 'ESSAY', 'ARTICLE', 'DIARY', 'OTHER', 'DRAFT']
+
 export default function Profile() {
   const navigate = useNavigate()
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
+  const [activeFilter, setActiveFilter] = useState('ALL')
   const userInfo = getUserInfo()
 
-  // Also check localStorage for updated profile pic
   const storedPic = localStorage.getItem('profilePicUrl')
   const storedBio = localStorage.getItem('bio')
   const profilePic = storedPic || userInfo.profilePicUrl
@@ -44,6 +46,13 @@ export default function Profile() {
     }
   }, [])
 
+  // Filter articles based on active filter
+  const filteredArticles = articles.filter((article) => {
+    if (activeFilter === 'ALL') return true
+    if (activeFilter === 'DRAFT') return article.status === 'DRAFT'
+    return article.category === activeFilter && article.status !== 'DRAFT'
+  })
+
   return (
     <div className="profile-page">
       <Navbar />
@@ -53,21 +62,51 @@ export default function Profile() {
         <div className="profile-main">
           <h2 className="profile-section-title">my past seasons</h2>
 
+          {/* ✅ Category filter toggles */}
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '0.5rem',
+            marginBottom: '1.25rem',
+          }}>
+            {FILTERS.map((filter) => (
+              <button
+                key={filter}
+                onClick={() => setActiveFilter(filter)}
+                style={{
+                  padding: '0.3rem 0.9rem',
+                  borderRadius: '20px',
+                  border: '1px solid',
+                  borderColor: activeFilter === filter ? '#59643A' : '#d1d5db',
+                  backgroundColor: activeFilter === filter ? '#59643A' : '#fff',
+                  color: activeFilter === filter ? '#fff' : '#6b7280',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '0.75rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {filter.toLowerCase()}
+              </button>
+            ))}
+          </div>
+
           {loading && <p className="feed-loading">loading your articles...</p>}
 
-          {!loading && articles.length === 0 && (
+          {!loading && filteredArticles.length === 0 && (
             <p className="feed-empty">
-              You haven't written anything yet.{' '}
-              <span
-                style={{ color: '#D37B27', cursor: 'pointer' }}
-                onClick={() => navigate('/create')}
-              >
-                Write your first branch!
-              </span>
+              {activeFilter === 'ALL'
+                ? <>You haven't written anything yet.{' '}
+                    <span style={{ color: '#D37B27', cursor: 'pointer' }} onClick={() => navigate('/create')}>
+                      Write your first branch!
+                    </span>
+                  </>
+                : `No ${activeFilter.toLowerCase()} articles yet.`
+              }
             </p>
           )}
 
-          {articles.map((article) => (
+          {filteredArticles.map((article) => (
             <div
               key={article.articleId}
               className="article-card"
@@ -113,15 +152,9 @@ export default function Profile() {
 
           {/* Profile card */}
           <div className="profile-card">
-
-            {/* Profile picture */}
             {profilePic ? (
               <div className="profile-avatar-wrapper">
-                <img
-                  src={profilePic}
-                  alt="profile"
-                  className="profile-avatar"
-                />
+                <img src={profilePic} alt="profile" className="profile-avatar" />
               </div>
             ) : (
               <div className="profile-avatar-placeholder">
@@ -155,6 +188,7 @@ export default function Profile() {
                 localStorage.removeItem('token')
                 localStorage.removeItem('profilePicUrl')
                 localStorage.removeItem('bio')
+                localStorage.removeItem('displayUsername')
                 navigate('/login')
               }}
             >

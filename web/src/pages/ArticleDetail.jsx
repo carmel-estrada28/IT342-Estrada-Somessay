@@ -2,19 +2,23 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   getArticleById, likeArticle, unlikeArticle,
-  addComment, deleteComment, deleteArticle
+  addComment, deleteComment, deleteArticle, updateArticle
 } from '../api/articleApi'
 import Navbar from '../components/Navbar'
 import '../styles/Register.css'
 import '../styles/Article.css'
 
-function getCurrentUserId() {
+function getCurrentUserInfo() {
   try {
     const token = localStorage.getItem('token')
-    if (!token) return null
+    if (!token) return {}
     const payload = JSON.parse(atob(token.split('.')[1]))
-    return payload.userId || payload.sub
-  } catch { return null }
+    return {
+      userId: payload.userId,
+      username: payload.username || payload.sub?.split('@')[0] || '',
+      profilePicUrl: localStorage.getItem('profilePicUrl') || null,
+    }
+  } catch { return {} }
 }
 
 export default function ArticleDetail() {
@@ -24,9 +28,11 @@ export default function ArticleDetail() {
   const [comment, setComment] = useState('')
   const [liked, setLiked] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [publishing, setPublishing] = useState(false)
   const [error, setError] = useState('')
   const [commentError, setCommentError] = useState('')
-  const currentUserId = getCurrentUserId()
+  const currentUser = getCurrentUserInfo()
+  const isLoggedIn = !!localStorage.getItem('token')
 
   const fetchArticle = () => {
     getArticleById(id)
@@ -38,6 +44,10 @@ export default function ArticleDetail() {
   useEffect(() => { fetchArticle() }, [id])
 
   const handleLike = async () => {
+    if (!isLoggedIn) {
+      navigate('/login')
+      return
+    }
     try {
       if (liked) {
         await unlikeArticle(id)
@@ -54,6 +64,10 @@ export default function ArticleDetail() {
   }
 
   const handleComment = async () => {
+    if (!isLoggedIn) {
+      navigate('/login')
+      return
+    }
     if (!comment.trim()) {
       setCommentError('Comment cannot be empty.')
       return
@@ -81,9 +95,22 @@ export default function ArticleDetail() {
     if (!window.confirm('Are you sure you want to delete this branch?')) return
     try {
       await deleteArticle(id)
-      navigate('/feed')
+      navigate('/profile')
     } catch {
       setError('Could not delete article.')
+    }
+  }
+
+  const handlePublish = async () => {
+    if (!window.confirm('Publish this branch?')) return
+    setPublishing(true)
+    try {
+      await updateArticle(id, { status: 'PUBLISHED' })
+      fetchArticle()
+    } catch {
+      setError('Could not publish article.')
+    } finally {
+      setPublishing(false)
     }
   }
 
@@ -107,9 +134,9 @@ export default function ArticleDetail() {
 
   if (!article) return null
 
-  const isOwner = currentUserId &&
-    (currentUserId === article.author?.userId ||
-     currentUserId === article.author?.email)
+  const isOwner = currentUser.userId &&
+    (currentUser.userId === article.author?.userId)
+  const isDraft = article.status === 'DRAFT'
 
   return (
     <div className="read-page">
@@ -118,9 +145,44 @@ export default function ArticleDetail() {
 
         {/* Main content */}
         <div className="read-main">
-          <button className="read-back-btn" onClick={() => navigate('/feed')}>
-            ← back to home
+          <button className="read-back-btn" onClick={() => navigate(-1)}>
+            ← back
           </button>
+
+          {/* Draft banner */}
+          {isDraft && isOwner && (
+            <div style={{
+              backgroundColor: '#FFF8E7',
+              border: '1px solid #D37B27',
+              borderRadius: '8px',
+              padding: '0.75rem 1rem',
+              marginBottom: '1rem',
+              fontFamily: "'Inter', sans-serif",
+              fontSize: '0.875rem',
+              color: '#D37B27',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+              <span>📝 This is a draft — only you can see it.</span>
+              <button
+                onClick={handlePublish}
+                disabled={publishing}
+                style={{
+                  backgroundColor: '#59643A',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '0.35rem 1rem',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                }}
+              >
+                {publishing ? 'publishing...' : 'publish branch'}
+              </button>
+            </div>
+          )}
 
           {article.coverUrl && (
             <img src={article.coverUrl} alt="cover" className="read-cover" />
@@ -153,57 +215,198 @@ export default function ArticleDetail() {
           )}
         </div>
 
-        {/* Sidebar */}
-        <div className="read-sidebar">
-          <button
-            onClick={handleLike}
-            className={`read-like-btn ${liked ? 'liked' : ''}`}
-          >
-            ♥ {article.likeCount || 0} Likes
-          </button>
+        {/* Sidebar — hidden for drafts */}
+        {!isDraft && (
+          <div className="read-sidebar">
 
-          <p className="read-comments-title">Comments</p>
-
-          {article.comments?.length === 0 && (
-            <p style={{ color: '#6b7280', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif' }}>
-              No comments yet.
-            </p>
-          )}
-
-          {article.comments?.map((c) => (
-            <div key={c.commentId} className="comment-item">
-              <span className="comment-author">{c.author?.username}</span>
-              <span className="comment-content">{c.content}</span>
-              {(currentUserId === c.author?.userId ||
-                currentUserId === c.author?.email) && (
+            {/* Like button */}
+            {article.allowLikes !== false && (
+              <>
                 <button
-                  className="comment-delete-btn"
-                  onClick={() => handleDeleteComment(c.commentId)}
-                  title="Delete comment"
+                  onClick={handleLike}
+                  className={`read-like-btn ${liked ? 'liked' : ''}`}
                 >
-                  ×
+                  {liked ? '♥' : '♡'} {article.likeCount || 0} Likes
                 </button>
-              )}
-            </div>
-          ))}
+                {/* Not logged in hint */}
+                {!isLoggedIn && (
+                  <p style={{
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '0.75rem',
+                    color: '#aaa',
+                    marginTop: '-0.5rem',
+                    marginBottom: '1rem',
+                    textAlign: 'center',
+                  }}>
+                    <span
+                      style={{ color: '#D37B27', cursor: 'pointer' }}
+                      onClick={() => navigate('/login')}
+                    >
+                      log in
+                    </span>
+                    {' '}to like
+                  </p>
+                )}
+              </>
+            )}
 
-          <div className="comment-input-row">
-            <input
-              className="comment-input"
-              placeholder="Thoughts?"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleComment()}
-            />
-            <button className="comment-send-btn" onClick={handleComment}>→</button>
+            {/* Likes disabled — owner only */}
+            {article.allowLikes === false && isOwner && (
+              <p style={{
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '0.875rem',
+                color: '#aaa',
+                marginBottom: '1rem'
+              }}>
+                ♥ {article.likeCount || 0} Likes · likes disabled
+              </p>
+            )}
+
+            {/* Comments section */}
+            {article.allowComments !== false ? (
+              <>
+                <p className="read-comments-title">Comments</p>
+
+                {article.comments?.length === 0 && (
+                  <p style={{ color: '#6b7280', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif' }}>
+                    No comments yet.
+                  </p>
+                )}
+
+                {article.comments?.map((c) => (
+                  <div key={c.commentId} className="comment-item">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                      {c.author?.profilePicUrl ? (
+                        <img
+                          src={c.author.profilePicUrl}
+                          alt="pfp"
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                            flexShrink: 0,
+                          }}
+                        />
+                      ) : (
+                        <div style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          backgroundColor: '#909F64',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.65rem',
+                          color: '#fff',
+                          flexShrink: 0,
+                        }}>
+                          {c.author?.username?.[0]?.toUpperCase() || '?'}
+                        </div>
+                      )}
+                      <span className="comment-author">{c.author?.username}</span>
+                      {isLoggedIn && currentUser.userId === c.author?.userId && (
+                        <button
+                          className="comment-delete-btn"
+                          style={{ position: 'static', marginLeft: 'auto' }}
+                          onClick={() => handleDeleteComment(c.commentId)}
+                          title="Delete comment"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                    <p style={{
+                      margin: '0 0 0 32px',
+                      fontSize: '0.82rem',
+                      color: '#2c2c2c',
+                      fontFamily: "'Inter', sans-serif",
+                      lineHeight: '1.5',
+                    }}>
+                      {c.content}
+                    </p>
+                  </div>
+                ))}
+
+                {/* Comment input — logged in users only */}
+                {isLoggedIn ? (
+                  <div className="comment-input-row">
+                    {currentUser.profilePicUrl ? (
+                      <img
+                        src={currentUser.profilePicUrl}
+                        alt="pfp"
+                        style={{
+                          width: '28px',
+                          height: '28px',
+                          borderRadius: '50%',
+                          objectFit: 'cover',
+                          flexShrink: 0,
+                        }}
+                      />
+                    ) : (
+                      <div style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '50%',
+                        backgroundColor: '#909F64',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '0.7rem',
+                        color: '#fff',
+                        flexShrink: 0,
+                      }}>
+                        {currentUser.username?.[0]?.toUpperCase() || '?'}
+                      </div>
+                    )}
+                    <input
+                      className="comment-input"
+                      placeholder="Thoughts?"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleComment()}
+                    />
+                    <button className="comment-send-btn" onClick={handleComment}>→</button>
+                  </div>
+                ) : (
+                  <p style={{
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '0.8rem',
+                    color: '#aaa',
+                    marginTop: '0.75rem',
+                    textAlign: 'center',
+                  }}>
+                    <span
+                      style={{ color: '#D37B27', cursor: 'pointer' }}
+                      onClick={() => navigate('/login')}
+                    >
+                      log in
+                    </span>
+                    {' '}to leave a comment
+                  </p>
+                )}
+
+                {commentError && (
+                  <p style={{ color: '#9B4B42', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', marginTop: '0.5rem' }}>
+                    {commentError}
+                  </p>
+                )}
+              </>
+            ) : (
+              isOwner && (
+                <p style={{
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '0.875rem',
+                  color: '#aaa',
+                  marginTop: '0.5rem'
+                }}>
+                  comments are disabled for this branch.
+                </p>
+              )
+            )}
+
           </div>
-
-          {commentError && (
-            <p style={{ color: '#9B4B42', fontSize: '0.8rem', fontFamily: 'Inter, sans-serif', marginTop: '0.5rem' }}>
-              {commentError}
-            </p>
-          )}
-        </div>
+        )}
       </div>
     </div>
   )

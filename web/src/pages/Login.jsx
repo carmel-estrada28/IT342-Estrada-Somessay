@@ -24,7 +24,19 @@ export default function Login() {
         { headers: { "Content-Type": "application/json" } }
       )
       if (res.data.status === "success") {
-        localStorage.setItem("token", res.data.data.token)
+        const token = res.data.data.token
+        localStorage.setItem("token", token)
+
+        try {
+          const meRes = await axios.get("http://localhost:8080/api/v1/users/me", {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+          const userData = meRes.data.data
+          if (userData.bio) localStorage.setItem('bio', userData.bio)
+          if (userData.profilePicUrl) localStorage.setItem('profilePicUrl', userData.profilePicUrl)
+          if (userData.username) localStorage.setItem('displayUsername', userData.username)
+        } catch (e) {}
+
         navigate("/feed")
       } else {
         setError(res.data.message)
@@ -48,7 +60,7 @@ export default function Login() {
         </a>
         <div className="navbar-links">
           <button className="nav-btn" onClick={() => navigate("/")}>home.</button>
-          <button className="nav-btn" onClick={() => navigate("/login")}>my profile.</button>
+          <button className="nav-btn" onClick={() => navigate("/login")}>profile.</button>
         </div>
       </nav>
 
@@ -89,8 +101,7 @@ export default function Login() {
 
             <div className="social-buttons">
               <button onClick={handleGoogleLogin}
-              className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 px-4 hover:bg-gray-50 transition"
-              >
+                className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 px-4 bg-white hover:bg-gray-200 transition"              >
                 <img
                   src="https://developers.google.com/identity/images/g-logo.png"
                   alt="Google"

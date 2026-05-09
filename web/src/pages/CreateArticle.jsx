@@ -14,6 +14,8 @@ export default function CreateArticle() {
     content: '',
     category: 'ESSAY',
     status: 'PUBLISHED',
+    allowLikes: true,
+    allowComments: true,
   })
   const [coverImage, setCoverImage] = useState(null)
   const [coverPreview, setCoverPreview] = useState(null)
@@ -23,22 +25,20 @@ export default function CreateArticle() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value })
 
+  const handleToggle = (field) =>
+    setForm({ ...form, [field]: !form[field] })
+
   const handleImageChange = (e) => {
     const file = e.target.files[0]
     if (!file) return
-
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       setError('Please upload an image file.')
       return
     }
-
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setError('Image must be smaller than 5MB.')
       return
     }
-
     setCoverImage(file)
     setCoverPreview(URL.createObjectURL(file))
     setError('')
@@ -69,15 +69,14 @@ export default function CreateArticle() {
     try {
       let coverUrl = null
 
-      // Upload image to Cloudinary if one was selected
       if (coverImage) {
         const cloudinaryData = new FormData()
         cloudinaryData.append('file', coverImage)
-        cloudinaryData.append('upload_preset', 'somessay_uploads') // ← your Cloudinary preset
-        cloudinaryData.append('cloud_name', 'dolue6cdw')     // ← your Cloudinary cloud name
+        cloudinaryData.append('upload_preset', 'somessay_uploads')
+        cloudinaryData.append('cloud_name', 'dolue6cdw')
 
         const cloudRes = await fetch(
-          'https://api.cloudinary.com/v1_1/dolue6cdw/image/upload', // ← replace your_cloud_name
+          'https://api.cloudinary.com/v1_1/dolue6cdw/image/upload',
           { method: 'POST', body: cloudinaryData }
         )
         const cloudData = await cloudRes.json()
@@ -120,7 +119,6 @@ export default function CreateArticle() {
             ))}
           </select>
 
-          {/* Cover image upload */}
           <label className="create-content-label" style={{ marginTop: '0.5rem' }}>
             cover image <span style={{ color: '#aaa', fontWeight: 400 }}>(optional)</span>
           </label>
@@ -171,6 +169,28 @@ export default function CreateArticle() {
         <div className="create-sidebar">
           <div className="create-settings-box">
             <p className="create-settings-title">settings</p>
+
+            {/* Allow likes toggle */}
+            <div className="create-toggle-row">
+              <span className="create-toggle-label">allow likes?</span>
+              <div
+                className={`create-toggle ${form.allowLikes ? 'on' : 'off'}`}
+                onClick={() => handleToggle('allowLikes')}
+              >
+                <div className="create-toggle-knob" />
+              </div>
+            </div>
+
+            {/* Allow comments toggle */}
+            <div className="create-toggle-row">
+              <span className="create-toggle-label">allow comments?</span>
+              <div
+                className={`create-toggle ${form.allowComments ? 'on' : 'off'}`}
+                onClick={() => handleToggle('allowComments')}
+              >
+                <div className="create-toggle-knob" />
+              </div>
+            </div>
           </div>
 
           <button
