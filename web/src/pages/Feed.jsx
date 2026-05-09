@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getAllArticles } from '../api/articleApi'
+import { getAllArticles, getRandomQuote, searchArticles } from '../api/articleApi'
 import Navbar from '../components/Navbar'
 import '../styles/Register.css'
 import '../styles/Feed.css'
@@ -26,6 +26,9 @@ export default function Feed() {
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [quote, setQuote] = useState(null)
+  const [search, setSearch] = useState('')
+  const [searching, setSearching] = useState(false)
   const { username, profilePicUrl } = getUserInfo()
 
   useEffect(() => {
@@ -33,7 +36,36 @@ export default function Feed() {
       .then((res) => setArticles(res.data.data || []))
       .catch(() => setError('Failed to load articles. Please try again.'))
       .finally(() => setLoading(false))
+
+    getRandomQuote()
+      .then((res) => setQuote(res.data.data))
+      .catch(() => {})
   }, [])
+
+  const handleSearch = async () => {
+    if (!search.trim()) return
+    setSearching(true)
+    setLoading(true)
+    setError('')
+    try {
+      const res = await searchArticles(search)
+      setArticles(res.data.data || [])
+    } catch {
+      setError('Search failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleClearSearch = () => {
+    setSearch('')
+    setSearching(false)
+    setLoading(true)
+    getAllArticles()
+      .then((res) => setArticles(res.data.data || []))
+      .catch(() => setError('Failed to load articles.'))
+      .finally(() => setLoading(false))
+  }
 
   return (
     <div className="feed-page">
@@ -43,7 +75,7 @@ export default function Feed() {
         {/* Left: Main feed */}
         <div className="feed-main">
           <div className="feed-welcome-row">
-            <p className="feed-welcome">welcome, {username}</p>
+            <p className="feed-welcome">welcome, {username} ·˚</p>
             <button
               className="feed-post-btn"
               onClick={() => navigate('/create')}
@@ -52,12 +84,67 @@ export default function Feed() {
             </button>
           </div>
 
+          {/* Search bar */}
+          <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
+            <input
+              type="text"
+              placeholder="search branches..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleSearch() }}
+              style={{
+                flex: 1,
+                padding: '0.5rem 1rem',
+                border: '1px solid #d1d5db',
+                borderRadius: '10px',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.875rem',
+                outline: 'none',
+                background: '#fff',
+              }}
+            />
+            <button
+              onClick={handleSearch}
+              style={{
+                backgroundColor: '#59643A',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '10px',
+                padding: '0.5rem 1rem',
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.875rem',
+                cursor: 'pointer',
+              }}
+            >
+              search
+            </button>
+            {searching && (
+              <button
+                onClick={handleClearSearch}
+                style={{
+                  backgroundColor: '#D9D9D9',
+                  color: '#2c2c2c',
+                  border: 'none',
+                  borderRadius: '10px',
+                  padding: '0.5rem 1rem',
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                }}
+              >
+                clear
+              </button>
+            )}
+          </div>
+
           <p className="feed-section-label"></p>
 
           {loading && <p className="feed-loading">loading articles...</p>}
           {error && <p className="feed-error">{error}</p>}
           {!loading && !error && articles.length === 0 && (
-            <p className="feed-empty">No articles yet. Be the first to write!</p>
+            <p className="feed-empty">
+              {searching ? 'No articles found.' : 'No articles yet. Be the first to write!'}
+            </p>
           )}
 
           {articles.map((article) => (
@@ -92,9 +179,9 @@ export default function Feed() {
 
         {/* Right: Sidebar */}
         <div className="feed-sidebar">
-          <div className="sidebar-profile-card">
 
-            {/* Profile picture */}
+          {/* Profile card */}
+          <div className="sidebar-profile-card">
             {profilePicUrl ? (
               <img
                 src={profilePicUrl}
@@ -128,9 +215,7 @@ export default function Feed() {
             )}
 
             <p className="sidebar-username">{username}</p>
-
             <hr className="profile-nav-divider" />
-            
             <button className="sidebar-link-btn" onClick={() => navigate('/profile')}>
               my profile
             </button>
@@ -138,6 +223,39 @@ export default function Feed() {
               activity
             </button>
           </div>
+
+          {/* Quote card */}
+          {quote && (
+            <div style={{
+              backgroundColor: '#fff',
+              border: '1px solid #f0ead8',
+              borderRadius: '12px',
+              padding: '1rem',
+              marginTop: '1rem',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+            }}>
+              <p style={{
+                fontFamily: "'Instrument Serif', serif",
+                fontSize: '0.85rem',
+                color: '#5C3D1E',
+                lineHeight: '1.6',
+                margin: '0 0 0.5rem',
+                fontStyle: 'italic',
+              }}>
+                "{quote.content}"
+              </p>
+              <p style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: '0.75rem',
+                color: '#909F64',
+                margin: 0,
+                textAlign: 'right',
+              }}>
+                — {quote.author}
+              </p>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
