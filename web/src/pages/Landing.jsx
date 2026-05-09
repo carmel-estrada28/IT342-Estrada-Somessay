@@ -9,7 +9,6 @@ export default function Landing() {
   const [articles, setArticles] = useState([])
   const [loading, setLoading] = useState(true)
 
-  // If already logged in, skip to feed
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (token) {

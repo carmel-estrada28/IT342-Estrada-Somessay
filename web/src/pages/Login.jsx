@@ -107,7 +107,7 @@ export default function Login() {
                   alt="Google"
                   className="w-5 h-5"
                 />
-                <span className="text-gray-700 font-medium">Sign in with Google</span>
+                <span className="text-gray-700 font-medium">Log in with Google</span>
               </button>
             </div>
 
