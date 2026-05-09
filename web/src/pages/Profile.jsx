@@ -62,7 +62,6 @@ export default function Profile() {
         <div className="profile-main">
           <h2 className="profile-section-title">my past seasons</h2>
 
-          {/* ✅ Category filter toggles */}
           <div style={{
             display: 'flex',
             flexWrap: 'wrap',
@@ -98,7 +97,7 @@ export default function Profile() {
               {activeFilter === 'ALL'
                 ? <>You haven't written anything yet.{' '}
                     <span style={{ color: '#D37B27', cursor: 'pointer' }} onClick={() => navigate('/create')}>
-                      Write your first branch!
+                      Write your first article!
                     </span>
                   </>
                 : `No ${activeFilter.toLowerCase()} articles yet.`

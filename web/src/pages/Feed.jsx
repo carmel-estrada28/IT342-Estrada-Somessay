@@ -75,12 +75,12 @@ export default function Feed() {
         {/* Left: Main feed */}
         <div className="feed-main">
           <div className="feed-welcome-row">
-            <p className="feed-welcome">welcome, {username} ·˚</p>
+            <p className="feed-welcome">welcome, {username}!</p>
             <button
               className="feed-post-btn"
               onClick={() => navigate('/create')}
             >
-              post a branch
+              post an article
             </button>
           </div>
 
@@ -88,7 +88,7 @@ export default function Feed() {
           <div style={{ marginBottom: '1rem', display: 'flex', gap: '0.5rem' }}>
             <input
               type="text"
-              placeholder="search branches..."
+              placeholder="search articles..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') handleSearch() }}

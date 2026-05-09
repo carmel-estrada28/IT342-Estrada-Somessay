@@ -101,7 +101,7 @@ export default function CreateArticle() {
         <div className="create-main">
           <input
             name="title"
-            placeholder="What's your branch title?"
+            placeholder="What's your article title?"
             value={form.title}
             onChange={handleChange}
             className="create-title-input"
@@ -198,7 +198,7 @@ export default function CreateArticle() {
             onClick={() => handleSubmit('PUBLISHED')}
             disabled={loading}
           >
-            {loading ? 'posting...' : 'post branch'}
+            {loading ? 'posting...' : 'post article'}
           </button>
 
           <button

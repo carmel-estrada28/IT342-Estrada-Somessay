@@ -48,6 +48,10 @@ export default function Register() {
       setError(err.response?.data?.message || "Something went wrong.")
     }
   }
+  
+    const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+  };
 
   return (
     <div className="register-page">
@@ -124,14 +128,19 @@ export default function Register() {
             <hr className="divider" />
 
             <div className="social-buttons">
-              <button type="button" className="social-btn">google</button>
-              <button type="button" className="social-btn">microsoft</button>
-              <button type="button" className="social-btn">facebook</button>
-            </div>
-
-            <button type="submit" className="submit-btn">
-              enter the seasons
-            </button>
+                <button onClick={handleGoogleLogin}
+                  className="w-full flex items-center justify-center gap-3 border border-gray-300 rounded-lg py-2 px-4 bg-white hover:bg-gray-200 transition"              >
+                  <img
+                    src="https://developers.google.com/identity/images/g-logo.png"
+                    alt="Google"
+                    className="w-5 h-5"
+                  />
+                  <span className="text-gray-700 font-medium">Sign up with Google</span>
+                </button>
+              </div>
+              <button type="submit" className="submit-btn">
+                enter the seasons
+              </button>
           </form>
 
           <p className="register-footer">

@@ -61,7 +61,7 @@ export default function EditProfile() {
     try {
       let profilePicUrl = localStorage.getItem('profilePicUrl') || null
 
-      // Upload new avatar to Cloudinary if selected
+      // Upload new avatar to Cloudinary 
       if (avatarFile) {
         const formData = new FormData()
         formData.append('file', avatarFile)
@@ -76,14 +76,13 @@ export default function EditProfile() {
         profilePicUrl = cloudData.secure_url
       }
 
-      // ✅ Call backend PUT /users/{id}
       await axiosClient.put(`/users/${userInfo.userId}`, {
         username,
         bio,
         profilePicUrl,
       })
 
-      // Save to localStorage so other pages update immediately
+      // Save to localStorage
       localStorage.setItem('displayUsername', username)
       if (bio) localStorage.setItem('bio', bio)
       if (profilePicUrl) localStorage.setItem('profilePicUrl', profilePicUrl)
@@ -104,7 +103,6 @@ export default function EditProfile() {
         <div className="edit-profile-card">
           <h2 className="edit-profile-title">edit profile</h2>
 
-          {/* Avatar upload */}
           <div className="edit-avatar-wrapper">
             {avatarPreview ? (
               <img
