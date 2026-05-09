@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import '../styles/Register.css'
 import '../styles/Profile.css'
+import axiosClient from '../api/axiosClient'
 
 function getUserInfo() {
   try {
@@ -21,7 +22,7 @@ export default function EditProfile() {
   const navigate = useNavigate()
   const userInfo = getUserInfo()
 
-  const [username, setUsername] = useState(userInfo.username || '')
+  const [username, setUsername] = useState(localStorage.getItem('displayUsername') || userInfo.username || '')
   const [bio, setBio] = useState(localStorage.getItem('bio') || '')
   const [avatarFile, setAvatarFile] = useState(null)
   const [avatarPreview, setAvatarPreview] = useState(
@@ -64,30 +65,33 @@ export default function EditProfile() {
       if (avatarFile) {
         const formData = new FormData()
         formData.append('file', avatarFile)
-        formData.append('upload_preset', 'somessay_uploads') // ← your preset
-        formData.append('cloud_name', 'dolue6cdw')     // ← your cloud name
+        formData.append('upload_preset', 'somessay_uploads')
+        formData.append('cloud_name', 'dolue6cdw')
 
         const cloudRes = await fetch(
-          'https://api.cloudinary.com/v1_1/dolue6cdw/image/upload', // ← your cloud name
+          'https://api.cloudinary.com/v1_1/dolue6cdw/image/upload',
           { method: 'POST', body: formData }
         )
         const cloudData = await cloudRes.json()
         profilePicUrl = cloudData.secure_url
       }
 
-      // Save to localStorage for now (will sync to backend later)
-      if (profilePicUrl) localStorage.setItem('profilePicUrl', profilePicUrl)
-      if (bio) localStorage.setItem('bio', bio)
+      // ✅ Call backend PUT /users/{id}
+      await axiosClient.put(`/users/${userInfo.userId}`, {
+        username,
+        bio,
+        profilePicUrl,
+      })
 
-      // TODO: Call backend PUT /users/{id} when ready
-      // await axiosClient.put(`/users/${userInfo.userId}`, {
-      //   username, bio, profilePicUrl
-      // })
+      // Save to localStorage so other pages update immediately
+      localStorage.setItem('displayUsername', username)
+      if (bio) localStorage.setItem('bio', bio)
+      if (profilePicUrl) localStorage.setItem('profilePicUrl', profilePicUrl)
 
       setSuccess('Profile updated successfully!')
       setTimeout(() => navigate('/profile'), 1500)
-    } catch {
-      setError('Failed to update profile. Please try again.')
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to update profile. Please try again.')
     } finally {
       setLoading(false)
     }
