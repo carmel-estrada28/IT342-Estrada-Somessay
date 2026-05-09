@@ -22,6 +22,7 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final EmailService emailService;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -42,6 +43,9 @@ public class AuthService {
         user.setIsVerified(false);
 
         userRepository.save(user);
+
+        // ✅ Send welcome email
+        emailService.sendWelcomeEmail(user.getEmail(), user.getUsername());
 
         return new AuthResponse("success", "Registration successful.", Map.of(
                 "username", user.getUsername(),
