@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { getMyActivity } from '../api/articleApi'
 import Navbar from '../components/Navbar'
 import '../styles/Register.css'
 import '../styles/Activity.css'
+import '../styles/Feed.css'
 
 function getUserInfo() {
   try {
@@ -11,7 +13,8 @@ function getUserInfo() {
     const payload = JSON.parse(atob(token.split('.')[1]))
     return {
       userId: payload.userId,
-      username: payload.username || payload.sub?.split('@')[0] || '',
+      username: localStorage.getItem('displayUsername') || payload.username || payload.sub?.split('@')[0] || '',
+      profilePicUrl: localStorage.getItem('profilePicUrl') || null,
     }
   } catch { return {} }
 }
@@ -32,7 +35,6 @@ function timeAgo(dateStr) {
   const now = new Date()
   const date = new Date(dateStr)
   const diff = Math.floor((now - date) / 1000)
-
   if (diff < 60) return 'just now'
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
@@ -43,6 +45,7 @@ export default function Activity() {
   const navigate = useNavigate()
   const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const userInfo = getUserInfo()
 
   useEffect(() => {
@@ -52,12 +55,14 @@ export default function Activity() {
       return
     }
 
-    // We'll use a mock for now until backend endpoint is ready
-    // Replace this with: getMyActivity(userInfo.userId) when backend is done
-    setTimeout(() => {
-      setActivities([])
+    if (userInfo.userId) {
+      getMyActivity(userInfo.userId)
+        .then((res) => setActivities(res.data.data || []))
+        .catch(() => setError('Failed to load activity.'))
+        .finally(() => setLoading(false))
+    } else {
       setLoading(false)
-    }, 500)
+    }
   }, [])
 
   const grouped = groupByDate(activities)
@@ -74,8 +79,9 @@ export default function Activity() {
           </h2>
 
           {loading && <p className="activity-loading">loading activity...</p>}
+          {error && <p style={{ color: '#9B4B42', fontFamily: 'Inter, sans-serif' }}>{error}</p>}
 
-          {!loading && activities.length === 0 && (
+          {!loading && !error && activities.length === 0 && (
             <div className="activity-empty">
               <p style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🌿</p>
               <p>No activity yet.</p>
@@ -90,12 +96,20 @@ export default function Activity() {
               <p className="activity-date-label">{date}</p>
               {items.map((item, index) => (
                 <div key={index} className="activity-item">
-                  {/* Avatar */}
-                  <div className="activity-avatar-placeholder">
-                    {item.fromUsername?.[0]?.toUpperCase() || '?'}
-                  </div>
 
-                  {/* Text */}
+                  {/* ✅ Profile picture */}
+                  {item.fromProfilePicUrl ? (
+                    <img
+                      src={item.fromProfilePicUrl}
+                      alt={item.fromUsername}
+                      className="activity-avatar"
+                    />
+                  ) : (
+                    <div className="activity-avatar-placeholder">
+                      {item.fromUsername?.[0]?.toUpperCase() || '?'}
+                    </div>
+                  )}
+
                   <div className="activity-text">
                     <span className="activity-username">
                       @{item.fromUsername}
@@ -113,7 +127,6 @@ export default function Activity() {
                     )}
                   </div>
 
-                  {/* Time */}
                   <span className="activity-time">
                     {timeAgo(item.createdAt)}
                   </span>
@@ -126,7 +139,42 @@ export default function Activity() {
         {/* Right: Sidebar */}
         <div className="feed-sidebar">
           <div className="sidebar-profile-card">
+
+            {/* ✅ Current user pfp in sidebar */}
+            {userInfo.profilePicUrl ? (
+              <img
+                src={userInfo.profilePicUrl}
+                alt="profile"
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '2px solid #EED59F',
+                  display: 'block',
+                  margin: '0 auto 0.75rem',
+                }}
+              />
+            ) : (
+              <div style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                backgroundColor: '#EED59F',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 0.75rem',
+                fontSize: '1.25rem',
+                fontFamily: "'Instrument Serif', serif",
+                color: '#5C3D1E',
+              }}>
+                {userInfo.username?.[0]?.toUpperCase() || '?'}
+              </div>
+            )}
+
             <p className="sidebar-username">{userInfo.username}</p>
+            <hr className="profile-nav-divider" />
             <button
               className="sidebar-link-btn"
               onClick={() => navigate('/profile')}
