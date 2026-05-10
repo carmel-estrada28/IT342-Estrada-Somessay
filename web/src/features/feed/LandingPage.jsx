@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getAllArticles } from '../api/articleApi'
-import '../styles/Register.css'
-import '../styles/Feed.css'
+import './feed.css'
+import '../../shared/styles/global.css'
+import { getAllArticles } from '../../shared/api/articleApi'
+
 
 export default function Landing() {
   const navigate = useNavigate()
