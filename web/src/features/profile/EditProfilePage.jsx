@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Navbar from '../components/Navbar'
-import '../styles/Register.css'
-import '../styles/Profile.css'
-import axiosClient from '../api/axiosClient'
+import './profile.css'
+import '../../shared/styles/global.css'
+import Navbar from '../../shared/components/Navbar'
+import axiosClient from '../../shared/api/axiosClient'
 
 function getUserInfo() {
   try {

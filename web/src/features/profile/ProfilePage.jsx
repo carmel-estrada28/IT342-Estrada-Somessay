@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getMyArticles } from '../api/articleApi'
-import Navbar from '../components/Navbar'
-import '../styles/Register.css'
-import '../styles/Feed.css'
-import '../styles/Profile.css'
-import '../styles/ArticleCard.css'
+import './profile.css'
+import '../../shared/styles/global.css'
+import '../../shared/styles/articleCard.css'
+import Navbar from '../../shared/components/Navbar'
+import { getMyArticles } from '../../shared/api/articleApi'
+
 
 function getUserInfo() {
   try {

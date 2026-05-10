@@ -1,15 +1,27 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import OAuth2Redirect from './pages/OAuth2Redirect'
-import Feed from './pages/Feed'
-import CreateArticle from './pages/CreateArticle'
-import ArticleDetail from './pages/ArticleDetail'
-import Profile from './pages/Profile'
-import Landing from './pages/Landing'
-import Activity from './pages/Activity' 
-import Admin from './pages/Admin'
-import EditProfile from './pages/EditProfile'
+
+// Auth
+import LoginPage from './features/auth/LoginPage'
+import RegisterPage from './features/auth/RegisterPage'
+import OAuth2Redirect from './features/auth/OAuth2Redirect'
+
+// Feed
+import FeedPage from './features/feed/FeedPage'
+import LandingPage from './features/feed/LandingPage'
+
+// Article
+import ArticleDetailPage from './features/article/ArticleDetailPage'
+import CreateArticlePage from './features/article/CreateArticlePage'
+
+// Profile
+import ProfilePage from './features/profile/ProfilePage'
+import EditProfilePage from './features/profile/EditProfilePage'
+
+// Activity
+import ActivityPage from './features/activity/ActivityPage'
+
+// Admin
+import AdminPage from './features/admin/AdminPage'
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token')
@@ -20,17 +32,17 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
-        <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
-        <Route path="/create" element={<ProtectedRoute><CreateArticle /></ProtectedRoute>} />
-        <Route path="/article/:id" element={<ArticleDetail />} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/activity" element={<ProtectedRoute><Activity /></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-        <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+        <Route path="/feed" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
+        <Route path="/article/:id" element={<ArticleDetailPage />} />
+        <Route path="/create" element={<ProtectedRoute><CreateArticlePage /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/edit-profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
+        <Route path="/activity" element={<ProtectedRoute><ActivityPage /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   )
