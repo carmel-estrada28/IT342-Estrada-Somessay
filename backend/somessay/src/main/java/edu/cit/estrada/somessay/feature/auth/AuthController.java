@@ -34,4 +34,9 @@ public class AuthController {
         tokenBlacklistService.blacklist(token); // ← lowercase, instance call
         return ResponseEntity.ok(new ApiResponse("success", "Logged out successfully.", null));
     }
+
+    @GetMapping("/verify")
+    public ResponseEntity<ApiResponse> verifyEmail(@RequestParam String token) {
+        return ResponseEntity.ok(authService.verifyEmail(token));
+    }
 }

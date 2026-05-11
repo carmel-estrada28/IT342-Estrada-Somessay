@@ -12,6 +12,7 @@ import edu.cit.estrada.somessay.shared.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.UUID;
 
 import java.util.Map;
 
@@ -36,21 +37,39 @@ public class AuthService {
         Role userRole = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
+        String verificationToken = UUID.randomUUID().toString();
+
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setRole(userRole);
         user.setIsVerified(false);
+        user.setVerificationToken(verificationToken);
 
+        userRepository.save(user);
+
+        emailService.sendVerificationEmail(user.getEmail(), user.getUsername(), verificationToken);
+
+        return new ApiResponse("success", "Registration successful. Please check your email to verify your account.", Map.of(
+                "username", user.getUsername(),
+                "email", user.getEmail()
+        ));
+    }
+
+    public ApiResponse verifyEmail(String token) {
+        User user = userRepository.findByVerificationToken(token).orElse(null);
+        if (user == null) {
+            return new ApiResponse("error", "Invalid or expired verification token.", null);
+        }
+
+        user.setIsVerified(true);
+        user.setVerificationToken(null);
         userRepository.save(user);
 
         emailService.sendWelcomeEmail(user.getEmail(), user.getUsername());
 
-        return new ApiResponse("success", "Registration successful.", Map.of(
-                "username", user.getUsername(),
-                "email", user.getEmail()
-        ));
+        return new ApiResponse("success", "Email verified successfully. Welcome to somessay!", null);
     }
 
     public ApiResponse login(LoginRequest request) {
@@ -58,6 +77,10 @@ public class AuthService {
 
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             return new ApiResponse("error", "Invalid email or password.", null);
+        }
+
+        if (!user.getIsVerified()) {
+            return new ApiResponse("error", "Please verify your email before logging in.", null);
         }
 
         String token = jwtUtil.generateToken(
