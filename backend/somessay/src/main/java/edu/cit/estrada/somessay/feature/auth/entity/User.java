@@ -33,6 +33,9 @@ public class User {
     @Column(name = "is_verified")
     private Boolean isVerified = false;
 
+    @Column(name = "verification_token")
+    private String verificationToken;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 

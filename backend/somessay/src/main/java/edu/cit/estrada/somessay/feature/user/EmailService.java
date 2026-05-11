@@ -60,6 +60,45 @@ public class EmailService {
     }
 
     @Async
+    public void sendVerificationEmail(String toEmail, String username, String token) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(fromEmail);
+            helper.setTo(toEmail);
+            helper.setSubject("verify your somessay account. 🌿");
+
+            String verifyUrl = "http://localhost:5173/verify?token=" + token;
+
+            String html = """
+            <div style="font-family: 'Georgia', serif; max-width: 480px; margin: 0 auto; padding: 2rem; background-color: #EED59F; border-radius: 16px;">
+                <h1 style="font-size: 2rem; color: #2c2c2c; margin-bottom: 0.5rem;">somessay.</h1>
+                <p style="color: #5C3D1E; font-size: 0.9rem; margin-bottom: 2rem;">a place to tell your written roots.</p>
+                <h2 style="color: #2c2c2c; font-weight: normal;">hey, %s! 🌿</h2>
+                <p style="color: #2c2c2c; line-height: 1.7;">
+                    thanks for joining somessay. please verify your email to enter the seasons.
+                </p>
+                <div style="margin-top: 2rem; padding: 1rem; background-color: #59643A; border-radius: 8px; text-align: center;">
+                    <a href="%s"
+                       style="color: #ffffff; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 1rem;">
+                        verify my email →
+                    </a>
+                </div>
+                <p style="color: #7A5C3A; font-size: 0.8rem; margin-top: 2rem; text-align: center;">
+                    if you didn't create this account, you can ignore this email. 🍂
+                </p>
+            </div>
+        """.formatted(username, verifyUrl);
+
+            helper.setText(html, true);
+            mailSender.send(message);
+        } catch (Exception e) {
+            System.err.println("Failed to send verification email: " + e.getMessage());
+        }
+    }
+
+    @Async
     public void sendLikeNotificationEmail(String toEmail, String ownerUsername,
                                           String likerUsername, String articleTitle) {
         try {
