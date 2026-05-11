@@ -118,3 +118,10 @@
   font-size: 0.95rem;
   margin-top: 1rem;
 }
+.activity-comment-preview {
+    font-size: 0.8rem;
+    color: #7a6244;
+    font-style: italic;
+    margin-top: 0.25rem;
+    font-family: 'Inter', sans-serif;
+}

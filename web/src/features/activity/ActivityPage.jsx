@@ -113,7 +113,9 @@ export default function Activity() {
                         @{item.fromUsername}
                         </span>{' '}
                         <span className="activity-action">
-                        has liked your article
+                            {item.type === 'comment'
+                                ? 'commented on your article'
+                                : 'has liked your article'}
                         </span>{' '}
                         {item.articleTitle && (
                         <span
@@ -122,6 +124,11 @@ export default function Activity() {
                         >
                             "{item.articleTitle}"
                         </span>
+                        )}
+                        {item.type === 'comment' && item.commentContent && (
+                            <p className="activity-comment-preview">
+                                "{item.commentContent}"
+                            </p>
                         )}
                     </div>
 
