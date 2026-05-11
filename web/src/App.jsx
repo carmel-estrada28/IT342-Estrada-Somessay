@@ -1,27 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-
-// Auth
 import LoginPage from './features/auth/LoginPage'
 import RegisterPage from './features/auth/RegisterPage'
 import OAuth2Redirect from './features/auth/OAuth2Redirect'
-
-// Feed
 import FeedPage from './features/feed/FeedPage'
 import LandingPage from './features/feed/LandingPage'
-
-// Article
 import ArticleDetailPage from './features/article/ArticleDetailPage'
 import CreateArticlePage from './features/article/CreateArticlePage'
-
-// Profile
 import ProfilePage from './features/profile/ProfilePage'
 import EditProfilePage from './features/profile/EditProfilePage'
-
-// Activity
 import ActivityPage from './features/activity/ActivityPage'
-
-// Admin
 import AdminPage from './features/admin/AdminPage'
+import VerifyPage from './features/auth/VerifyPage'
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem('token')
@@ -43,6 +32,7 @@ function App() {
         <Route path="/edit-profile" element={<ProtectedRoute><EditProfilePage /></ProtectedRoute>} />
         <Route path="/activity" element={<ProtectedRoute><ActivityPage /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+        <Route path="/verify" element={<VerifyPage />} />
       </Routes>
     </BrowserRouter>
   )
