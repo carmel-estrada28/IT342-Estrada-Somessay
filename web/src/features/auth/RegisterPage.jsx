@@ -40,8 +40,7 @@ export default function Register() {
         { headers: { "Content-Type": "application/json" } }
       )
       if (res.data.status === "success") {
-        setSuccess("Registration successful! Redirecting to login...")
-        setTimeout(() => navigate("/login"), 2000)
+        setSuccess('Registration successful! Please check your email to verify your account before logging in.')
       } else {
         setError(res.data.message)
       }
