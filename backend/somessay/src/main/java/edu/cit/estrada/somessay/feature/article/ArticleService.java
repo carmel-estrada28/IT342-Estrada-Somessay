@@ -102,12 +102,12 @@ public class ArticleService {
         article.setAllowLikes(request.getAllowLikes() != null ? request.getAllowLikes() : true);
         article.setAllowComments(request.getAllowComments() != null ? request.getAllowComments() : true);
 
-        articleRepository.save(article);
+        Article saved = articleRepository.save(article);
 
         return new ApiResponse("success", "Article created.", Map.of(
-                "articleId", article.getId(),
-                "title", article.getTitle(),
-                "status", article.getStatus()
+                "articleId", saved.getId(),
+                "title", saved.getTitle(),
+                "status", saved.getStatus()
         ));
     }
 
