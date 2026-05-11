@@ -13,7 +13,7 @@
 
         <!-- Login is the entry point -->
         <activity
-            android:name=".ui.auth.LoginActivity"
+            android:name=".feature.auth.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,8 +21,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.auth.RegisterActivity" />
-        <activity android:name=".ui.home.HomeActivity" />
+        <activity android:name=".feature.auth.RegisterActivity" />
+        <activity android:name=".feature.feed.HomeActivity" />
 
     </application>
 
