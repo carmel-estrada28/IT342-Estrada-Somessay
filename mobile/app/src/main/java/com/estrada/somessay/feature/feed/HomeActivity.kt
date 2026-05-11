@@ -1,11 +1,11 @@
-package com.estrada.somessay.ui.home
+package com.estrada.somessay.feature.feed
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.estrada.somessay.databinding.ActivityHomeBinding
-import com.estrada.somessay.utils.TokenManager
-import com.estrada.somessay.ui.auth.LoginActivity
+import com.estrada.somessay.shared.utils.TokenManager
+import com.estrada.somessay.feature.auth.LoginActivity
 
 class HomeActivity : AppCompatActivity() {
 

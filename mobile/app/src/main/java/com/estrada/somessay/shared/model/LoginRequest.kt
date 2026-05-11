@@ -1,4 +1,4 @@
-package com.estrada.somessay.model
+package com.estrada.somessay.shared.model
 
 data class LoginRequest(
     val email: String,

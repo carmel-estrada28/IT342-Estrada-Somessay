@@ -1,4 +1,4 @@
-package com.estrada.somessay.model
+package com.estrada.somessay.shared.model
 
 data class AuthResponse(
     val status: String,
@@ -8,7 +8,8 @@ data class AuthResponse(
 
 data class AuthData(
     val token: String?,
-    val userId: String?,
+    val userId: Int?,
     val username: String?,
-    val role: String?
+    val role: String?,
+    val email: String?
 )

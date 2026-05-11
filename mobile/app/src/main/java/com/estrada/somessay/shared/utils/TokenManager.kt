@@ -1,4 +1,4 @@
-package com.estrada.somessay.utils
+package com.estrada.somessay.shared.utils
 
 import android.content.Context
 import android.content.SharedPreferences

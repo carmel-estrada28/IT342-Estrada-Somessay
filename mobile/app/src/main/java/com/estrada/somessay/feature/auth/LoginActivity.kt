@@ -1,15 +1,15 @@
-package com.estrada.somessay.ui.auth
+package com.estrada.somessay.feature.auth
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.estrada.somessay.api.RetrofitClient
+import com.estrada.somessay.shared.api.RetrofitClient
 import com.estrada.somessay.databinding.ActivityLoginBinding
-import com.estrada.somessay.model.LoginRequest
-import com.estrada.somessay.utils.TokenManager
-import com.estrada.somessay.ui.home.HomeActivity
+import com.estrada.somessay.shared.model.LoginRequest
+import com.estrada.somessay.shared.utils.TokenManager
+import com.estrada.somessay.feature.feed.HomeActivity
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
