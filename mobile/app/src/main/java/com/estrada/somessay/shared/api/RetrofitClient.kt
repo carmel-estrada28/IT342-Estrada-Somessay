@@ -1,4 +1,4 @@
-package com.estrada.somessay.api
+package com.estrada.somessay.shared.api
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

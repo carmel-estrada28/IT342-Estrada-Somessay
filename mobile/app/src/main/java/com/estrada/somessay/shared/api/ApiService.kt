@@ -1,8 +1,8 @@
-package com.estrada.somessay.api
+package com.estrada.somessay.shared.api
 
-import com.estrada.somessay.model.AuthResponse
-import com.estrada.somessay.model.LoginRequest
-import com.estrada.somessay.model.RegisterRequest
+import com.estrada.somessay.shared.model.AuthResponse
+import com.estrada.somessay.shared.model.LoginRequest
+import com.estrada.somessay.shared.model.RegisterRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
