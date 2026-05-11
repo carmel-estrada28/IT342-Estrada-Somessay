@@ -9,6 +9,8 @@ import edu.cit.estrada.somessay.feature.like.repository.LikeRepository;
 import edu.cit.estrada.somessay.feature.user.dto.UpdateProfileRequest;
 import edu.cit.estrada.somessay.feature.user.dto.UserResponse;
 import edu.cit.estrada.somessay.shared.dto.ApiResponse;
+import edu.cit.estrada.somessay.feature.comment.entity.Comment;
+import edu.cit.estrada.somessay.feature.comment.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
 
     private UserResponse toResponse(User user) {
         UserResponse res = new UserResponse();
@@ -89,17 +92,35 @@ public class UserService {
         List<Map<String, Object>> activities = new ArrayList<>();
 
         for (Article article : articles) {
+            // existing likes loop — keep as is
             List<Like> likes = likeRepository.findByArticleOrderByCreatedAtDesc(article);
             for (Like like : likes) {
                 if (like.getUser().getId().equals(userId)) continue;
 
                 Map<String, Object> activity = new HashMap<>();
+                activity.put("type", "like");  // ← add this line too
                 activity.put("fromUsername", like.getUser().getUsername());
                 activity.put("fromUserId", like.getUser().getId());
                 activity.put("fromProfilePicUrl", like.getUser().getProfilePicUrl());
                 activity.put("articleId", article.getId());
                 activity.put("articleTitle", article.getTitle());
                 activity.put("createdAt", like.getCreatedAt().toString());
+                activities.add(activity);
+            }
+
+            List<Comment> comments = commentRepository.findByArticleOrderByCreatedAtAsc(article);
+            for (Comment comment : comments) {
+                if (comment.getAuthor().getId().equals(userId)) continue;
+
+                Map<String, Object> activity = new HashMap<>();
+                activity.put("type", "comment");
+                activity.put("fromUsername", comment.getAuthor().getUsername());
+                activity.put("fromUserId", comment.getAuthor().getId());
+                activity.put("fromProfilePicUrl", comment.getAuthor().getProfilePicUrl());
+                activity.put("articleId", article.getId());
+                activity.put("articleTitle", article.getTitle());
+                activity.put("commentContent", comment.getContent());
+                activity.put("createdAt", comment.getCreatedAt().toString());
                 activities.add(activity);
             }
         }
