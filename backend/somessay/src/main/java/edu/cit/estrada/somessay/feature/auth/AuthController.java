@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final TokenBlacklistService tokenBlacklistService; // ← add this
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -27,7 +28,10 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse> logout() {
+    public ResponseEntity<ApiResponse> logout(
+            @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        tokenBlacklistService.blacklist(token); // ← lowercase, instance call
         return ResponseEntity.ok(new ApiResponse("success", "Logged out successfully.", null));
     }
 }
